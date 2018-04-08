@@ -10,21 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.DataAccess", "DemoApp.DataAccess\DemoApp.DataAccess.csproj", "{AFBB9DBB-8B7D-4647-A377-94C689B0BB65}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://sivparvanov.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = DemoApp.DataAccess\\DemoApp.DataAccess.csproj
-		SccProjectName1 = DemoApp.DataAccess
-		SccLocalPath1 = DemoApp.DataAccess
-		SccProjectUniqueName2 = DemoApp.MVC.Tests\\DemoApp.MVC.Tests.csproj
-		SccProjectName2 = DemoApp.MVC.Tests
-		SccLocalPath2 = DemoApp.MVC.Tests
-		SccProjectUniqueName3 = DemoApp.MVC\\DemoApp.MVC.csproj
-		SccProjectName3 = DemoApp.MVC
-		SccLocalPath3 = DemoApp.MVC
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

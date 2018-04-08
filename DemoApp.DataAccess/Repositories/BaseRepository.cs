@@ -14,7 +14,7 @@ namespace DemoApp.DataAccess.Repositories
         protected BaseRepository Init(string dataBaseName)
         {
             var connStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ToString();
-            var dbName = String.Format("  database={0};", dataBaseName);
+            var dbName = String.Format("{0}.mdf;", dataBaseName);
             StringBuilder sb = new StringBuilder(connStr);
             sb.Append(dbName);
             ConnectionString = sb.ToString();

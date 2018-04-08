@@ -44,19 +44,31 @@ namespace DemoApp.MVC.Tests
         }
 
         [TestMethod]
-        public void PictureControler_GetAll()
+        public void GetDataBaseName()
+        {
+            //arrange
+            string expected = "DemoAppDb1";
+            BaseController target = new BaseController();
+            //act
+            var actual = target.GetDataBaseName("simo@mail.bg");
+            //assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void PictureControler_CanReturnAllPictures()
         {
             //arrange
             var expectedallProducts = new List<PictureDto> { new PictureDto() };
             pictureModelMock
-                .Setup(it => it.Init(""))
+                .Setup(x => x.Init(""))
                 .Returns(pictureModelMock.Object);
             pictureModelMock
-                .Setup(it => it.GetAll())
+                .Setup(x => x.GetAll())
                 .Returns(new List<PictureDto> { new PictureDto() });
 
             //act
-            var result = target.Index();
+            var result = target.List(1);
 
             //assert
             var model = (result as ViewResult).Model as List<PictureDto>;

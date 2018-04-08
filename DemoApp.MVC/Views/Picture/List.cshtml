@@ -1,0 +1,32 @@
+﻿@model IPagedList<DemoApp.DataAccess.Entities.PictureDto>
+@{
+    ViewBag.Title = "Browse all pictures";
+}
+<h2>@ViewBag.Title</h2>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<ul style="display:inline-block; list-style:none">
+    @foreach (var item in Model)
+    {
+        <li style="display:inline-block;padding:5px;">
+            <figure>
+                <div>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </div>
+                <div>
+                    <img src="data:image/jpg;base64, @Convert.ToBase64String(item.Data, 0, item.Data.Length)"
+                         alt="" />
+                </div>
+                <div style="height:1.5em; width:15em; overflow:hidden">
+                    @item.Comment
+                </div>
+            </figure>
+        </li>
+    }
+
+</ul>
+<div class="pager">
+    @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount)
+</div>

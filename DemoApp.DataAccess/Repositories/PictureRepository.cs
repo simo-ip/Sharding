@@ -36,6 +36,7 @@ namespace DemoApp.DataAccess.Repositories
                         
                         picture.Id = reader.GetGuid(0);
                         picture.UserId = reader.GetGuid(2);
+                        picture.Comment = reader.GetString(3);
 
                         long bytesize = reader.GetBytes(1, 0, null, 0, 0);
                         picture.Data = new byte[bytesize];
@@ -97,7 +98,7 @@ namespace DemoApp.DataAccess.Repositories
             return result.FirstOrDefault();
         }
 
-        public int Greate(PictureDto picture)
+        public int Create(PictureDto picture)
         {
             int result;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -106,6 +107,7 @@ namespace DemoApp.DataAccess.Repositories
                 SqlCommand command = new SqlCommand("PicturesInsert", conn);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("Data", picture.Data);
+                command.Parameters.AddWithValue("Thumbnail", picture.Thumbnail);
                 command.Parameters.AddWithValue("UserId", picture.UserId);
                 command.Parameters.AddWithValue("Comment", picture.Comment);
                 conn.Open();
@@ -124,6 +126,7 @@ namespace DemoApp.DataAccess.Repositories
                 command.CommandType = System.Data.CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("Id", picture.Id);
                 command.Parameters.AddWithValue("Data", picture.Data);
+                command.Parameters.AddWithValue("Thumbnail", picture.Thumbnail);
                 command.Parameters.AddWithValue("Comment", picture.Comment);
                 conn.Open();
                 result = command.ExecuteNonQuery();

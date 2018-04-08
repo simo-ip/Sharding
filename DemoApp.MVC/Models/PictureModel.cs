@@ -22,9 +22,7 @@ namespace DemoApp.MVC.Models
 
         public virtual List<PictureDto> GetAll()
         {
-            var data = PictureRepository.GetAll();
-            imageResize(data);
-            return data;
+            return PictureRepository.GetAll();
         }
 
         public PictureDto GetById(Guid id)
@@ -34,65 +32,72 @@ namespace DemoApp.MVC.Models
 
         public PictureDto Create(PictureDto picture)
         {
-            PictureRepository.Greate(picture);
+            picture.Thumbnail = imageResize(picture.Data);
+            PictureRepository.Create(picture);
             return picture;
         }
 
         public int Update(PictureDto picture)
         {
-            int result = PictureRepository.Update(picture);
-            return result;
+            if (picture.Data != null)
+            {
+                picture.Thumbnail = imageResize(picture.Data);
+            }
+            return PictureRepository.Update(picture);
         }
 
         public int Delete(Guid Id)
         {
-            int result = PictureRepository.Delete(Id);
-            return result;
+            return PictureRepository.Delete(Id);
         }
         private void imageResize(List<PictureDto> data)
         {
             foreach(var item in data)
             {
 
-                WebImage foo = new WebImage(item.Data);
+                item.Data = imageResize(item.Data);
+            }            
+        }
 
-                int sourceWidth = foo.Width;
-                int sourceHeight = foo.Height;
+        private byte[] imageResize(byte[] item)
+        {
+            WebImage foo = new WebImage(item);
 
-                int width = 100;
-                int height = 100;
+            int sourceWidth = foo.Width;
+            int sourceHeight = foo.Height;
 
-                float nPercent = 0;
-                float nPercentW = 0;
-                float nPercentH = 0;
+            int width = 200;
+            int height = 200;
 
-                nPercentW = ((float)width / (float)sourceWidth);
-                nPercentH = ((float)height / (float)sourceHeight);
+            float nPercent = 0;
+            float nPercentW = 0;
+            float nPercentH = 0;
 
-                if (nPercentH > nPercentW)
-                    nPercent = nPercentH;
-                else
-                    nPercent = nPercentW;
+            nPercentW = ((float)width / (float)sourceWidth);
+            nPercentH = ((float)height / (float)sourceHeight);
 
-                int destWidth = (int)(sourceWidth * nPercent);
-                int destHeight = (int)(sourceHeight * nPercent);
+            if (nPercentH > nPercentW)
+                nPercent = nPercentH;
+            else
+                nPercent = nPercentW;
 
-                foo.Resize(destWidth, destHeight);
+            int destWidth = (int)(sourceWidth * nPercent);
+            int destHeight = (int)(sourceHeight * nPercent);
 
-                
-                if (nPercentH > nPercentW)
-                {
-                    int size = (int)Math.Round((decimal)(foo.Width - width) / 2, 0);
-                    foo.Crop(0, size, 0, size);
-                }
-                else
-                {
-                    int size = (int)Math.Round((decimal)(foo.Height - height) / 2, 0);
-                    foo.Crop(size, 0, size, 0);
-                }
-                item.Data = foo.GetBytes();
+            foo.Resize(destWidth, destHeight);
+
+
+            if (nPercentH > nPercentW)
+            {
+                int size = (int)Math.Round((decimal)(foo.Width - width) / 2, 0);
+                foo.Crop(0, size, 0, size);
             }
-            
+            else
+            {
+                int size = (int)Math.Round((decimal)(foo.Height - height) / 2, 0);
+                foo.Crop(size, 0, size, 0);
+            }
+            return foo.GetBytes();
         }
 
         

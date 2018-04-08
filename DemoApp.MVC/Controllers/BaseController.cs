@@ -17,7 +17,8 @@ namespace DemoApp.MVC.Controllers
             }
         }
 
-        protected string GetDataBaseName(string userEmail)
+        
+        public string GetDataBaseName(string userEmail)
         {
             string db = "";
             int hc = userEmail.GetHashCode();

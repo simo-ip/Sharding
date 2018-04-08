@@ -1,4 +1,5 @@
 ﻿using DemoApp.DataAccess.Entities;
+using DemoApp.MVC.Infrastructure;
 using DemoApp.MVC.Models;
 using Microsoft.Practices.Unity;
 using System;
@@ -7,22 +8,30 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MvcPaging;
 
 namespace DemoApp.MVC.Controllers
 {
     [Authorize]
+    [SessionExpireAttribute]
     public class PictureController : BaseController
     {
+        const int DefaultPageSize = 5;
+
         [Dependency]
         public PictureModel PictureModel { get; set; }
 
-        public ActionResult Index()
+        public ActionResult List(int? page)
         {
             PictureModel.Init(DbName);
-
             var model = PictureModel.GetAll();
-            
-            return View(model);
+            int currentPageIndex = page.HasValue ? page.Value - 1 : 0;
+            return View(model.ToPagedList(currentPageIndex, DefaultPageSize));
+        }
+
+        public ActionResult Index()
+        {
+            return RedirectToAction("List");
         }
 
         public ActionResult Details(int id)
@@ -43,6 +52,7 @@ namespace DemoApp.MVC.Controllers
                 if (file != null)
                 {
                     var userName = System.Web.HttpContext.Current.User.Identity.Name;
+
                     Guid userId = Guid.Parse(System.Web.HttpContext.Current.Session["UserId"].ToString());
                     
                     Stream s = file.InputStream;
@@ -73,7 +83,7 @@ namespace DemoApp.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(HttpPostedFileBase file, PictureDto model)
+        public ActionResult Edit(HttpPostedFileBase file, PictureDto model, string returnUrl)
         {
             try
             {
@@ -91,7 +101,7 @@ namespace DemoApp.MVC.Controllers
                     PictureModel.Init(DbName).Update(model);
                 }
 
-                return RedirectToAction("Index");
+                return Redirect(returnUrl);
             }
             catch
             {

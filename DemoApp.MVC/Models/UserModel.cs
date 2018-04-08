@@ -19,9 +19,9 @@ namespace DemoApp.MVC.Models
             return this;
         }
 
-        public virtual User Register(User user)
+        public Guid Register(User user)
         {
-            return UserRepository.Greate(user);
+            return UserRepository.Create(user);
         }
 
         public virtual User Validate(string username, string password)

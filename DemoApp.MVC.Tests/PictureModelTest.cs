@@ -34,7 +34,7 @@ namespace DemoApp.MVC.Tests
         }
 
         [TestMethod]
-        public void PictureModel_GetAll()
+        public void PictureModel_CanReturnAllPictures()
         {                                 
             // TODO
             var actual = target.GetAll();

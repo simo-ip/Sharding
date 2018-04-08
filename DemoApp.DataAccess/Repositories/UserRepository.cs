@@ -12,13 +12,13 @@ namespace DemoApp.DataAccess.Repositories
     public class UserRepository : BaseRepository
     {
             
-        public UserRepository Init(string dataBaseName)
+        public virtual UserRepository Init(string dataBaseName)
         {
             base.Init(dataBaseName);
             return this;
         }
 
-        public List<User> GetAll()
+        public virtual List<User> GetAll()
         {
             List<User> result = new List<User>();
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -42,6 +42,32 @@ namespace DemoApp.DataAccess.Repositories
                 }
             }
             return result;
+        }
+
+        public virtual User FindByEmail(string email)
+        {
+            List<User> result = new List<User>();
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("UsersFindByEmail", conn);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("Email", email);
+                conn.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var user = new User
+                        {
+                            Id = reader.GetGuid(0),
+                            Email = reader.GetString(1),
+                            Password = reader.GetString(2),
+                        };
+                        result.Add(user);
+                    }
+                }
+            }
+            return result.FirstOrDefault();
         }
 
         public User Validate(string email, string password)
@@ -71,7 +97,7 @@ namespace DemoApp.DataAccess.Repositories
             return result.FirstOrDefault();
         }
 
-        public User Greate(User user)
+        public virtual Guid Create(User user)
         {
             Guid result;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -84,9 +110,9 @@ namespace DemoApp.DataAccess.Repositories
                 command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Direction = ParameterDirection.Output;
                 conn.Open();
                 command.ExecuteNonQuery();
-                user.Id = new Guid(command.Parameters["@Id"].Value.ToString());
+                result = new Guid(command.Parameters["@Id"].Value.ToString());
             }
-            return user;
+            return result;
         }
 
         public int Update(User user)

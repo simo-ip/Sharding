@@ -10,7 +10,9 @@ namespace DemoApp.DataAccess.Entities
     {
         public Guid Id { get; set; }
         public byte[] Data { get; set; }
+        public byte[] Thumbnail { get; set; }
         public Guid UserId { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string Comment { get; set; }
     }
 }

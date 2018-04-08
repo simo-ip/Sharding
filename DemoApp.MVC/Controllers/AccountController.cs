@@ -1,4 +1,5 @@
 ﻿using DemoApp.DataAccess.Entities;
+using DemoApp.MVC.Infrastructure;
 using DemoApp.MVC.Models;
 using Microsoft.Practices.Unity;
 using System;
@@ -14,6 +15,9 @@ namespace DemoApp.MVC.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
+        [Dependency]
+        public FormsAuth FormsAuth { get; set; }
+
         [Dependency]
         public UserModel UserModel { get; set; }
 
@@ -36,7 +40,8 @@ namespace DemoApp.MVC.Controllers
                 if ( user != null)
                 {
                     System.Web.HttpContext.Current.Session.Add("UserId", user.Id);
-                    FormsAuthentication.SetAuthCookie(model.Email, false);
+                    FormsAuth.Login(model.Email); //FormsAuthentication.SetAuthCookie(model.Email, false);
+                    
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("", "The email or password provided is incorrect.");
@@ -72,17 +77,19 @@ namespace DemoApp.MVC.Controllers
                     Password = model.Password
                 };
                 UserModel.Init(db);
-                User user = UserModel.Register(newUser);
-                if (user != null)
+                Guid userId = UserModel.Register(newUser);
+                if (userId != null)
                 {
-                    System.Web.HttpContext.Current.Session.Add("UserId", user.Id);
-                    FormsAuthentication.SetAuthCookie(model.Email, false);
+                    ControllerContext.HttpContext.Session.Add("UserId", userId);
+                    FormsAuth.Login(model.Email); //FormsAuthentication.SetAuthCookie(model.Email, false);
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Registration is not successful");
+                else
+                {
+                    ModelState.AddModelError("", "Registration is not successful");
+                }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
     }
